@@ -16,15 +16,15 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>@project.groupId@</groupId>
-        <artifactId>@project.artifactId@</artifactId>
-        <version>@project.version@</version>
+        <groupId>org.cjan</groupId>
+        <artifactId>test-collector-maven-plugin</artifactId>
+        <version>0.1-SNAPSHOT</version>
         <executions>
           <execution>
-            <id>touch</id>
+            <id>upload</id>
             <phase>validate</phase>
             <goals>
-              <goal>touch</goal>
+              <goal>upload</goal>
             </goals>
           </execution>
         </executions>
