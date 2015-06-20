@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.apache.maven.plugins.surefire.report.SurefireReportParser;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.MavenReportException;
 
 /**
@@ -45,6 +46,9 @@ public class TestCollectMojo extends AbstractMojo {
 
     @Parameter(defaultValue="${project.build.directory}/target/surefire-reports", property="reports", required=true)
     private File reportsDirectory;
+
+    @Parameter(defaultValue="${project}", readonly=true, required=true)
+    MavenProject project;
 
     /*
      * (non-Javadoc)
@@ -69,6 +73,11 @@ public class TestCollectMojo extends AbstractMojo {
         // get environment properties
         EnvironmentProperties envProps = Utils.getEnvironmentProperties();
         getLog().info(envProps.toString());
+        // get project information
+        String groupId = project.getGroupId();
+        String artifactId = project.getArtifactId();
+        String version = project.getVersion();
+        System.out.println(String.format("Project info: %s%n%s%n%s", groupId, artifactId, version));
         // TODO upload results
         // get summary and show to user!
         getLog().info(String.format("%d tests uploaded!", testSuites.size()));

@@ -71,11 +71,14 @@
 			<version>2.18</version>
 		</dependency>
 		<!-- use maven to get environment properties -->
-		<!-- dependency>
+		<!-- dependency> <groupId>org.apache.maven</groupId> <artifactId>maven-embedder</artifactId> 
+			<version>3.3.3</version> </dependency -->
+		<!-- get project information -->
+		<dependency>
 			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-embedder</artifactId>
-			<version>3.3.3</version>
-		</dependency -->
+			<artifactId>maven-project</artifactId>
+			<version>2.0.11</version>
+		</dependency>
 	</dependencies>
 
 	<build>
