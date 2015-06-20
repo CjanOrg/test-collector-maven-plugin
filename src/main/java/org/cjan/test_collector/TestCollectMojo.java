@@ -66,6 +66,9 @@ public class TestCollectMojo extends AbstractMojo {
 		} catch (MavenReportException e) {
 			throw new MojoExecutionException("Failed to parse test reports: " + e.getMessage(), e);
 		}
+        // get environment properties
+        EnvironmentProperties envProps = Utils.getEnvironmentProperties();
+        getLog().info(envProps.toString());
         // TODO upload results
         // get summary and show to user!
         getLog().info(String.format("%d tests uploaded!", testSuites.size()));
