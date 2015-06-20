@@ -65,8 +65,16 @@ public class TestCollectMojo extends AbstractMojo {
         Locale locale = Locale.getDefault();
         SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), locale);
         final List<ReportTestSuite> testSuites;
+        // Result flag, true is all good, flag is failures/bad.
+        boolean result = true;
         try {
 			testSuites = parser.parseXMLReportFiles();
+			for (ReportTestSuite suite : testSuites) {
+				if (suite.getNumberOfFailures() > 0) {
+					result = false;
+					break;
+				}
+			}
 		} catch (MavenReportException e) {
 			throw new MojoExecutionException("Failed to parse test reports: " + e.getMessage(), e);
 		}
@@ -77,10 +85,11 @@ public class TestCollectMojo extends AbstractMojo {
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
-        System.out.println(String.format("Project info: %s%n%s%n%s", groupId, artifactId, version));
+        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s", groupId, artifactId, version));
         // TODO upload results
         // get summary and show to user!
-        getLog().info(String.format("%d tests uploaded!", testSuites.size()));
+        getLog().info(String.format("%d tests found!", testSuites.size()));
+        getLog().info(result ? "Status: OK!" : "Status: NOT OK!");
     }
 
 }
