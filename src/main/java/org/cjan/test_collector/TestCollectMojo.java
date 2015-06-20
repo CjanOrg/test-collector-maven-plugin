@@ -4,6 +4,7 @@
 package org.cjan.test_collector;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -28,8 +29,6 @@ public class TestCollectMojo extends AbstractMojo {
     @Parameter(defaultValue="${project.build.directory}/target/surefire-reports", property="reports", required=true)
     private File reportsDirectory;
 
-    @Parameter(defaultValue="**/*.xml", property="pattern", required=false)
-    private String pattern;
     /*
      * (non-Javadoc)
      * @see org.apache.maven.plugin.AbstractMojo#execute()
@@ -40,22 +39,10 @@ public class TestCollectMojo extends AbstractMojo {
         if (!reportsDirectory.exists() || !reportsDirectory.isDirectory()) {
             throw new MojoExecutionException(String.format("Invalid reports directory [%s]", reportsDirectory));
         }
-        // get reports
-        getLog().debug("Getting test reports...");
-        DirectoryScanner ds = new DirectoryScanner();
-        ds.setIncludes(new String[] {pattern});
-        ds.setBasedir(reportsDirectory);
-        ds.setCaseSensitive(false);
-        ds.scan();
-        String[] includedFiles = ds.getIncludedFiles();
-        List<File> reports = new LinkedList<File>();
-        for (String includedFile : includedFiles) {
-        	reports.add(new File(includedFile));
-        }
         // parse results
         getLog().debug("Parsing results...");
         Locale locale = Locale.getDefault();
-        SurefireReportParser parser = new SurefireReportParser(reports, locale);
+        SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), locale);
         final List<ReportTestSuite> testSuites;
         try {
 			testSuites = parser.parseXMLReportFiles();
