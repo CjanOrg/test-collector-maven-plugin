@@ -65,8 +65,11 @@ public class TestCollectMojo extends AbstractMojo {
         }
         // parse results
         getLog().debug("Parsing results...");
-        Locale locale = Locale.getDefault();
-        SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), locale);
+        
+        Locale lc = Locale.getDefault();
+        TimeZone tz = TimeZone.getDefault();
+        
+        SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), lc);
         final List<ReportTestSuite> testSuites;
         // Result flag, true is all good, flag is failures/bad.
         boolean result = true;
@@ -78,7 +81,8 @@ public class TestCollectMojo extends AbstractMojo {
 				}
 				for (ReportTestCase tc : suite.getTestCases()) {
 					Map<String, Object> failure = tc.getFailure();
-					System.out.println(failure);
+					if (null != failure)
+						System.out.println(failure);
 				}
 			}
 		} catch (MavenReportException e) {
@@ -91,8 +95,14 @@ public class TestCollectMojo extends AbstractMojo {
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
-        String timezone = TimeZone.getDefault().getID();
-        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s%ntimezone: %s", groupId, artifactId, version, timezone));
+        String timezone = tz.getID();
+        String country = lc.getCountry();
+        String language = lc.getLanguage();
+        String variant = lc.getVariant();
+        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%n"
+        		+ "version: %s%ntimezone: %s%n"
+        		+ "country: %s%nlanguage: %s%nvariant: %s", groupId, artifactId, version, timezone, 
+        			country, language, variant));
         // TODO upload results
         // get summary and show to user!
         getLog().info(String.format("%d tests found!", testSuites.size()));
