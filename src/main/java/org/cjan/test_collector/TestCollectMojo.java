@@ -27,12 +27,15 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.surefire.report.ReportTestCase;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.apache.maven.plugins.surefire.report.SurefireReportParser;
 import org.apache.maven.project.MavenProject;
@@ -72,7 +75,10 @@ public class TestCollectMojo extends AbstractMojo {
 			for (ReportTestSuite suite : testSuites) {
 				if (suite.getNumberOfFailures() > 0) {
 					result = false;
-					break;
+				}
+				for (ReportTestCase tc : suite.getTestCases()) {
+					Map<String, Object> failure = tc.getFailure();
+					System.out.println(failure);
 				}
 			}
 		} catch (MavenReportException e) {
@@ -85,7 +91,8 @@ public class TestCollectMojo extends AbstractMojo {
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
-        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s", groupId, artifactId, version));
+        String timezone = TimeZone.getDefault().getID();
+        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s%ntimezone: %s", groupId, artifactId, version, timezone));
         // TODO upload results
         // get summary and show to user!
         getLog().info(String.format("%d tests found!", testSuites.size()));
