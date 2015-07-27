@@ -13,6 +13,7 @@ public class EnvironmentProperties {
 	private String javaVersion;
 	private String javaVendor;
 	private String locale;
+	private String timezone;
 	private String platformEncoding;
 	private String osName;
 	private String osVersion;
@@ -45,6 +46,14 @@ public class EnvironmentProperties {
 
 	public void setLocale(String locale) {
 		this.locale = locale;
+	}
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 
 	public String getPlatformEncoding() {
@@ -105,6 +114,8 @@ public class EnvironmentProperties {
 		result = prime
 				* result
 				+ ((platformEncoding == null) ? 0 : platformEncoding.hashCode());
+		result = prime * result
+				+ ((timezone == null) ? 0 : timezone.hashCode());
 		return result;
 	}
 
@@ -157,13 +168,19 @@ public class EnvironmentProperties {
 				return false;
 		} else if (!platformEncoding.equals(other.platformEncoding))
 			return false;
+		if (timezone == null) {
+			if (other.timezone != null)
+				return false;
+		} else if (!timezone.equals(other.timezone))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "EnvironmentProperties [javaVersion=" + javaVersion + ", javaVendor=" + javaVendor
-				+ ", locale=" + locale + ", platformEncoding="
+		return "EnvironmentProperties [javaVersion=" + javaVersion
+				+ ", javaVendor=" + javaVendor + ", locale=" + locale
+				+ ", timezone=" + timezone + ", platformEncoding="
 				+ platformEncoding + ", osName=" + osName + ", osVersion="
 				+ osVersion + ", osArch=" + osArch + ", osFamily=" + osFamily
 				+ "]";

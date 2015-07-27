@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -67,8 +66,7 @@ public class TestCollectMojo extends AbstractMojo {
         getLog().debug("Parsing results...");
         
         Locale lc = Locale.getDefault();
-        TimeZone tz = TimeZone.getDefault();
-        
+
         SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), lc);
         final List<ReportTestSuite> testSuites;
         // Result flag, true is all good, flag is failures/bad.
@@ -95,14 +93,7 @@ public class TestCollectMojo extends AbstractMojo {
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
-        String timezone = tz.getID();
-        String country = lc.getCountry();
-        String language = lc.getLanguage();
-        String variant = lc.getVariant();
-        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%n"
-        		+ "version: %s%ntimezone: %s%n"
-        		+ "country: %s%nlanguage: %s%nvariant: %s", groupId, artifactId, version, timezone, 
-        			country, language, variant));
+        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s%n", groupId, artifactId, version));
         // TODO upload results
         // get summary and show to user!
         getLog().info(String.format("%d tests found!", testSuites.size()));

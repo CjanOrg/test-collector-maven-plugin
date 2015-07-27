@@ -19,6 +19,7 @@ package org.cjan.test_collector;
  */
 
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.codehaus.plexus.util.Os;
 
@@ -29,16 +30,17 @@ public class Utils {
 
 	public static EnvironmentProperties getEnvironmentProperties()
     {
-        EnvironmentProperties version = new EnvironmentProperties();
-        version.setJavaVersion(System.getProperty("java.version", "<unknown java version>"));
-        version.setJavaVendor(System.getProperty("java.vendor", "<unknown vendor>"));
-        version.setLocale(Locale.getDefault().toString());
-        version.setPlatformEncoding(System.getProperty("file.encoding", "<unknown encoding>"));
-        version.setOsName(Os.OS_NAME.toString());
-        version.setOsVersion(Os.OS_VERSION.toString());
-        version.setOsArch(Os.OS_ARCH.toString());
-        version.setOsFamily(Os.OS_FAMILY.toString());
-        return version;
+        EnvironmentProperties envVars = new EnvironmentProperties();
+        envVars.setJavaVersion(System.getProperty("java.version", "<unknown java version>"));
+        envVars.setJavaVendor(System.getProperty("java.vendor", "<unknown vendor>"));
+        envVars.setLocale(Locale.getDefault().toString());
+        envVars.setTimezone(TimeZone.getDefault().getID());
+        envVars.setPlatformEncoding(System.getProperty("file.encoding", "<unknown encoding>"));
+        envVars.setOsName(Os.OS_NAME.toString());
+        envVars.setOsVersion(Os.OS_VERSION.toString());
+        envVars.setOsArch(Os.OS_ARCH.toString());
+        envVars.setOsFamily(Os.OS_FAMILY.toString());
+        return envVars;
     }
 	
 }
