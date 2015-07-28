@@ -27,14 +27,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.surefire.report.ReportTestCase;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.apache.maven.plugins.surefire.report.SurefireReportParser;
 import org.apache.maven.project.MavenProject;
@@ -46,6 +44,12 @@ import org.apache.maven.reporting.MavenReportException;
 @Mojo(name="upload")
 public class TestCollectMojo extends AbstractMojo {
 
+	@Parameter(defaultValue="http://localhost:8000/upload/results", property="url", required=false)
+	private String cjanUrl;
+	
+	@Parameter(property="token", required=true)
+	private String accessToken;
+	
     @Parameter(defaultValue="${project.build.directory}/target/surefire-reports", property="reports", required=true)
     private File reportsDirectory;
 
@@ -64,40 +68,38 @@ public class TestCollectMojo extends AbstractMojo {
         }
         // parse results
         getLog().debug("Parsing results...");
-        
+
         Locale lc = Locale.getDefault();
 
         SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), lc);
         final List<ReportTestSuite> testSuites;
         // Result flag, true is all good, flag is failures/bad.
-        boolean result = true;
         try {
 			testSuites = parser.parseXMLReportFiles();
-			for (ReportTestSuite suite : testSuites) {
-				if (suite.getNumberOfFailures() > 0) {
-					result = false;
-				}
-				for (ReportTestCase tc : suite.getTestCases()) {
-					Map<String, Object> failure = tc.getFailure();
-					if (null != failure)
-						System.out.println(failure);
-				}
-			}
+			// get summary and show to user!
+	        getLog().info(String.format("%d tests found!", testSuites.size()));
 		} catch (MavenReportException e) {
 			throw new MojoExecutionException("Failed to parse test reports: " + e.getMessage(), e);
 		}
+
         // get environment properties
         EnvironmentProperties envProps = Utils.getEnvironmentProperties();
-        getLog().info(envProps.toString());
+        getLog().debug(envProps.toString());
+
         // get project information
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
         getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s%n", groupId, artifactId, version));
-        // TODO upload results
-        // get summary and show to user!
-        getLog().info(String.format("%d tests found!", testSuites.size()));
-        getLog().info(result ? "Status: OK!" : "Status: NOT OK!");
+
+        Uploader uploader = new Uploader(cjanUrl, accessToken);
+        try {
+        	uploader.upload(groupId, artifactId, version, envProps, testSuites);
+        } catch (UploadException ue) {
+        	throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
+        }
+        
+        getLog().info("Tests uploaded! Thank you!");
     }
 
 }
