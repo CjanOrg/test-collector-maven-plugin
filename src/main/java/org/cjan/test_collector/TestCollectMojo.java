@@ -90,11 +90,12 @@ public class TestCollectMojo extends AbstractMojo {
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
-        getLog().debug(String.format("Project info: %ngroupId: %s%nartifactId: %s%nversion: %s%n", groupId, artifactId, version));
+        getLog().debug(String.format("Project info: [groupId => %s] [artifactId => %s] [version => %s]", groupId, artifactId, version));
 
         Uploader uploader = new Uploader(cjanUrl, accessToken);
         try {
-        	uploader.upload(groupId, artifactId, version, envProps, testSuites);
+        	String response = uploader.upload(groupId, artifactId, version, envProps, testSuites);
+        	getLog().debug(response);
         } catch (UploadException ue) {
         	throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
         }

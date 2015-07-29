@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -69,7 +70,7 @@ public class Uploader {
 	 * @throws UploadException
 	 *             if it fails to upload
 	 */
-	public void upload(String groupId, String artifactId, String version,
+	public String upload(String groupId, String artifactId, String version,
 			EnvironmentProperties envProps, List<ReportTestSuite> testSuites)
 			throws UploadException {
 		validate(groupId, "Missing groupId");
@@ -135,15 +136,14 @@ public class Uploader {
 			post.setEntity(new UrlEncodedFormEntity(pairs));
 			CloseableHttpResponse response = httpclient.execute(post);
 			try {
-				System.out.println("----------------------------------------");
-				System.out.println(response.getStatusLine());
-				EntityUtils.consume(response.getEntity());
+				HttpEntity entity = response.getEntity();
+				String body = EntityUtils.toString(entity);
+				return body;
 			} finally {
 				response.close();
 			}
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new UploadException("Client protocol error: " + e.getMessage(), e);
 		} catch (IOException e) {
 			throw new UploadException("IO error: " + e.getMessage(), e);
 		} finally {

@@ -13,7 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <build>
+  <!--<build>
     <plugins>
       <plugin>
         <groupId>org.cjan</groupId>
@@ -30,5 +30,5 @@
         </executions>
       </plugin>
     </plugins>
-  </build>
+  </build>-->
 </project>
