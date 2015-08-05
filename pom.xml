@@ -144,4 +144,5 @@
 			</build>
 		</profile>
 	</profiles>
+	<description>CJAN.org Maven plug-in used to upload test results.</description>
 </project>

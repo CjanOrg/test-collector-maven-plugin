@@ -24,5 +24,9 @@
 
 /**
  * Main classes.
+ *
+ * @author Bruno P. Kinoshita
+ * @since 0.1
  */
 package org.cjan.test_collector;
+

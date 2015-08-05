@@ -23,39 +23,29 @@
  */
 package org.cjan.test_collector;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 /**
- * Valid statuses for CJAN.org upload results.
- * 
+ * Tests for {@link Status}.
+ *
  * @author Bruno P. Kinoshita
  * @since 0.1
  */
-public enum Status {
+public class TestStatus {
 
-    SUCCESS(1), FAILURE(2), SKIP(3), UNKNOWN(4);
+    @Test
+    public void testStatus() {
+        assertEquals(1, Status.SUCCESS.getId());
+        assertEquals(2, Status.FAILURE.getId());
+        assertEquals(3, Status.SKIP.getId());
+        assertEquals(4, Status.UNKNOWN.getId());
 
-    int id;
-
-    Status(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public static Status fromId(int id) {
-        switch (id) {
-        case 1:
-            return SUCCESS;
-        case 2:
-            return FAILURE;
-        case 3:
-            return SKIP;
-        case 4:
-            return UNKNOWN;
-        default:
-            return null;
-        }
+        assertEquals(Status.SUCCESS, Status.fromId(1));
+        assertEquals(Status.FAILURE, Status.fromId(2));
+        assertEquals(Status.SKIP, Status.fromId(3));
+        assertEquals(Status.UNKNOWN, Status.fromId(4));
     }
 
 }

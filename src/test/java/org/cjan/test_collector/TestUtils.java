@@ -23,39 +23,29 @@
  */
 package org.cjan.test_collector;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
- * Valid statuses for CJAN.org upload results.
- * 
+ * Tests for {@link Utils}.
+ *
  * @author Bruno P. Kinoshita
  * @since 0.1
  */
-public enum Status {
+public class TestUtils {
 
-    SUCCESS(1), FAILURE(2), SKIP(3), UNKNOWN(4);
-
-    int id;
-
-    Status(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public static Status fromId(int id) {
-        switch (id) {
-        case 1:
-            return SUCCESS;
-        case 2:
-            return FAILURE;
-        case 3:
-            return SKIP;
-        case 4:
-            return UNKNOWN;
-        default:
-            return null;
-        }
+    @org.junit.Test
+    public void testGettingEnvironmentProperties() {
+        EnvironmentProperties envProps = Utils.getEnvironmentProperties();
+        assertNotNull(envProps);
+        assertNotNull(envProps.getJavaVendor());
+        assertNotNull(envProps.getJavaVersion());
+        assertNotNull(envProps.getLocale());
+        assertNotNull(envProps.getOsArch());
+        assertNotNull(envProps.getOsFamily());
+        assertNotNull(envProps.getOsName());
+        assertNotNull(envProps.getOsVersion());
+        assertNotNull(envProps.getPlatformEncoding());
+        assertNotNull(envProps.getTimezone());
     }
 
 }

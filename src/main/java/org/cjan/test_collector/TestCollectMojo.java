@@ -40,24 +40,34 @@ import org.apache.maven.reporting.MavenReportException;
 
 /**
  * Collects test results to upload to CJAN.org.
+ *
+ * @author Bruno P. Kinoshita
+ * @since 0.1
  */
-@Mojo(name="upload")
+@Mojo(name = "upload")
 public class TestCollectMojo extends AbstractMojo {
 
-	@Parameter(defaultValue="http://localhost:8000/upload/results", property="url", required=false)
-	private String cjanUrl;
-	
-	@Parameter(property="token", required=true)
-	private String accessToken;
-	
-    @Parameter(defaultValue="${project.build.directory}/target/surefire-reports", property="reports", required=true)
+    @Parameter(defaultValue = "http://cjan.org/upload/results", property = "cjan.url", required = false)
+    private String cjanUrl;
+
+    @Parameter(property = "cjan.proxy.host", required = false)
+    private String proxyHost;
+
+    @Parameter(property = "cjan.proxy.port", required = false)
+    private String proxyPort;
+
+    @Parameter(property = "cjan.token", required = true)
+    private String accessToken;
+
+    @Parameter(defaultValue = "${project.build.directory}/target/surefire-reports", property = "cjan.reports", required = true)
     private File reportsDirectory;
 
-    @Parameter(defaultValue="${project}", readonly=true, required=true)
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.apache.maven.plugin.AbstractMojo#execute()
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -67,20 +77,20 @@ public class TestCollectMojo extends AbstractMojo {
             throw new MojoExecutionException(String.format("Invalid reports directory [%s]", reportsDirectory));
         }
         // parse results
-        getLog().debug("Parsing results...");
-
         Locale lc = Locale.getDefault();
+        getLog().debug("Locale set: " + lc);
 
         SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), lc);
         final List<ReportTestSuite> testSuites;
-        // Result flag, true is all good, flag is failures/bad.
+        getLog().debug("Parsing results...");
+        // Result flag, true is all good, false is failures/bad.
         try {
-			testSuites = parser.parseXMLReportFiles();
-			// get summary and show to user!
-	        getLog().info(String.format("%d tests found!", testSuites.size()));
-		} catch (MavenReportException e) {
-			throw new MojoExecutionException("Failed to parse test reports: " + e.getMessage(), e);
-		}
+            testSuites = parser.parseXMLReportFiles();
+            // get summary and show to user!
+            getLog().info(String.format("%d tests found!", testSuites.size()));
+        } catch (MavenReportException e) {
+            throw new MojoExecutionException("Failed to parse test reports: " + e.getMessage(), e);
+        }
 
         // get environment properties
         EnvironmentProperties envProps = Utils.getEnvironmentProperties();
@@ -90,17 +100,21 @@ public class TestCollectMojo extends AbstractMojo {
         String groupId = project.getGroupId();
         String artifactId = project.getArtifactId();
         String version = project.getVersion();
-        getLog().debug(String.format("Project info: [groupId => %s] [artifactId => %s] [version => %s]", groupId, artifactId, version));
+        getLog().debug(
+                String.format("Project info: [groupId => %s] [artifactId => %s] [version => %s]", groupId, artifactId,
+                        version));
 
-        Uploader uploader = new Uploader(cjanUrl, accessToken);
+        getLog().debug(String.format("Creating uploader to %", cjanUrl));
+        getLog().debug(String.format("Proxy settings: [%s]:[%s]", proxyHost, proxyPort));
+        Uploader uploader = new Uploader(cjanUrl, proxyHost, proxyPort, accessToken);
         try {
-        	String response = uploader.upload(groupId, artifactId, version, envProps, testSuites);
-        	getLog().debug(response);
+            String response = uploader.upload(groupId, artifactId, version, envProps, testSuites);
+            getLog().debug(String.format("Server response: %s", response));
         } catch (UploadException ue) {
-        	throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
+            throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
         }
-        
-        getLog().info("Tests uploaded! Thank you!");
+
+        getLog().info("Tests uploaded to CJAN.org! Thank you!");
     }
 
 }
