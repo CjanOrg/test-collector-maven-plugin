@@ -9,27 +9,49 @@
 
 	<name>test-collector-maven-plugin Maven Plugin</name>
 
+	<description>CJAN.org Maven plug-in used to upload test results.</description>
+
 	<url>http://cjan.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.7</java.version>
 	</properties>
 
-	<inceptionYear>2015</inceptionYear>
+	<issueManagement>
+		<url>https://github.com/CjanOrg/test-collector-maven-plugin/issues</url>
+		<system>GitHub</system>
+	</issueManagement>
 
 	<developers>
 		<developer>
 			<id>kinow</id>
+			<email>brunodepaulak@yahoo.com.br</email>
 			<name>Bruno P. Kinoshita</name>
-			<email>kinow@apache.org</email>
 			<organization>TupiLabs</organization>
-			<organizationUrl>http://tupilabs.com</organizationUrl>
-			<timezone>+12</timezone>
+			<organizationUrl>http://www.tupilabs.com</organizationUrl>
 			<roles>
 				<role>developer</role>
 			</roles>
+			<timezone>-3</timezone>
+			<url>http://www.kinoshita.eti.br</url>
 		</developer>
 	</developers>
+
+	<scm>
+		<url>https://github.com/CjanOrg/test-collector-maven-plugin</url>
+		<connection>scm:git:git://github.com/CjanOrg/test-collector-maven-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:CjanOrg/test-collector-maven-plugin.git</developerConnection>
+	</scm>
+
+	<inceptionYear>2015</inceptionYear>
+
+	<!-- Sonatype OSS parent, to release to Maven central -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<licenses>
 		<license>
@@ -140,9 +162,18 @@
 							<settingsFile>src/it/settings.xml</settingsFile>
 						</configuration>
 					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<target>${java.version}</target>
+							<source>${java.version}</source>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
-	<description>CJAN.org Maven plug-in used to upload test results.</description>
+
 </project>
