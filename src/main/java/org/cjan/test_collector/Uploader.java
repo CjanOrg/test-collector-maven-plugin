@@ -135,13 +135,16 @@ public class Uploader {
     }
 
     /**
-     * 
-     * @return
+     * @return the accessToken
      */
     public String getAccessToken() {
         return accessToken;
     }
 
+    /**
+     * Return {@code true} iff the host and port for the proxy are specified
+     * @return {@code true} when using the proxy, {@code false} otherwise
+     */
     public boolean isProxyEnabled() {
         return getProxyHost() != null && getProxyHost().trim().equals("") == false && getProxyPort() != null
                 && getProxyPort().trim().equals("") == false;
@@ -210,17 +213,17 @@ public class Uploader {
             throw new UploadException("IO error: " + e.getMessage(), e);
         }
 
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        final CloseableHttpClient httpclient = HttpClients.createDefault();
 
         try {
             RequestConfig config = null;
             if (isProxyEnabled()) {
                 LOGGER.fine("Using HTTP proxy!");
-                HttpHost proxy = new HttpHost(getProxyHost(), Integer.parseInt(getProxyPort()));
+                final HttpHost proxy = new HttpHost(getProxyHost(), Integer.parseInt(getProxyPort()));
                 config = RequestConfig.custom().setProxy(proxy).build();
             }
 
-            HttpPost post = new HttpPost(getUrl());
+            final HttpPost post = new HttpPost(getUrl());
             if (config != null) {
                 post.setConfig(config);
             }
