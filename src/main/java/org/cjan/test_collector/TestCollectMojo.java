@@ -104,7 +104,7 @@ public class TestCollectMojo extends AbstractMojo {
                 String.format("Project info: [groupId => %s] [artifactId => %s] [version => %s]", groupId, artifactId,
                         version));
 
-        getLog().debug(String.format("Creating uploader to %", cjanUrl));
+        getLog().debug(String.format("Creating uploader to %s", cjanUrl));
         getLog().debug(String.format("Proxy settings: [%s]:[%s]", proxyHost, proxyPort));
         Uploader uploader = new Uploader(cjanUrl, proxyHost, proxyPort, accessToken);
         try {
