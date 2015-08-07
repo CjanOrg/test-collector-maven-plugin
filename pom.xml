@@ -3,7 +3,7 @@
 
 	<groupId>org.cjan</groupId>
 	<artifactId>test-collector-maven-plugin</artifactId>
-	<version>0.2</version>
+	<version>0.3-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>test-collector-maven-plugin Maven Plugin</name>
