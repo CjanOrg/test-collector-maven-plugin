@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.biouno.unochoice.model.TestGroovyScript
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.354 sec - in org.biouno.unochoice.model.TestGroovyScript

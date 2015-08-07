@@ -25,7 +25,6 @@ package org.cjan.test_collector;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +41,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -156,20 +154,18 @@ public class Uploader {
      * @param artifactId artifactId
      * @param version version
      * @param envProps environment properties
-     * @param testSuites test suites
+     * @param testResults test results
      * @throws UploadException if it fails to upload
      */
     public String upload(String groupId, String artifactId, String version, EnvironmentProperties envProps,
-            List<ReportTestSuite> testSuites) throws UploadException {
+            TestResults testResults) throws UploadException {
         validate(groupId, "Missing groupId");
         validate(artifactId, "Missing artifactId");
         validate(version, "Missing version");
         validate(envProps, "Missing environment properties");
-        validate(testSuites, "Empty test suite");
+        validate(testResults, "Empty test suite");
 
         LOGGER.info("Uploading test results to CJAN.org");
-
-        TestResults testResults = new TestResults(testSuites);
 
         final TestRun testRun = new TestRun(groupId, artifactId, version, envProps, testResults.getGeneralStatus());
         testRun.addTests(testResults.getTests());
@@ -257,18 +253,6 @@ public class Uploader {
      */
     private void validate(Object value, String message) {
         if (null == value) {
-            throw new RuntimeException("Validation error: " + message);
-        }
-    }
-
-    /**
-     * Validate collections.
-     *
-     * @param value Collection parameter
-     * @param message Message if parameter is null or empty
-     */
-    private void validate(Collection<?> value, String message) {
-        if (null == value || value.isEmpty()) {
             throw new RuntimeException("Validation error: " + message);
         }
     }

@@ -63,7 +63,7 @@ public class TestResults {
                 // TBD: investigate where is the SKIP status
                 Status status = Status.SUCCESS;
                 Map<String, Object> failure = tc.getFailure();
-                if (failure != null) {
+                if (failure != null && failure.size() > 0) {
                     status = Status.FAILURE;
                 }
                 // TBD: fix metadata
@@ -82,6 +82,15 @@ public class TestResults {
      */
     public List<Test> getTests() {
         return new ArrayList<Test>(tests);
+    }
+
+    /**
+     * Return the number of tests, without creating an extra copy of the list of tests.
+     *
+     * @return number of tests
+     */
+    public int getNumberOfTests() {
+        return tests.size();
     }
 
     /**

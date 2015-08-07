@@ -81,13 +81,16 @@ public class TestCollectMojo extends AbstractMojo {
         getLog().debug("Locale set: " + lc);
 
         SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), lc);
-        final List<ReportTestSuite> testSuites;
+        final TestResults testResults;
         getLog().debug("Parsing results...");
         // Result flag, true is all good, false is failures/bad.
         try {
-            testSuites = parser.parseXMLReportFiles();
+            final List<ReportTestSuite> testSuites = parser.parseXMLReportFiles();
             // get summary and show to user!
-            getLog().info(String.format("%d tests found!", testSuites.size()));
+            getLog().info(String.format("%d test suites found!", testSuites.size()));
+            testResults = new TestResults(testSuites);
+            getLog().info(String.format("%d tests found!", testResults.getNumberOfTests()));
+            getLog().debug("General status found: " + testResults.getGeneralStatus());
         } catch (MavenReportException e) {
             throw new MojoExecutionException("Failed to parse test reports: " + e.getMessage(), e);
         }
@@ -108,7 +111,7 @@ public class TestCollectMojo extends AbstractMojo {
         getLog().debug(String.format("Proxy settings: [%s]:[%s]", proxyHost, proxyPort));
         Uploader uploader = new Uploader(cjanUrl, proxyHost, proxyPort, accessToken);
         try {
-            String response = uploader.upload(groupId, artifactId, version, envProps, testSuites);
+            String response = uploader.upload(groupId, artifactId, version, envProps, testResults);
             getLog().debug(String.format("Server response: %s", response));
         } catch (UploadException ue) {
             throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
