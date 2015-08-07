@@ -59,7 +59,7 @@ public class TestCollectMojo extends AbstractMojo {
     @Parameter(property = "cjan.token", required = true)
     private String accessToken;
 
-    @Parameter(defaultValue = "${project.build.directory}/target/surefire-reports", property = "cjan.reports", required = true)
+    @Parameter(defaultValue = "${project.build.directory}/surefire-reports", property = "cjan.reports", required = true)
     private File reportsDirectory;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)

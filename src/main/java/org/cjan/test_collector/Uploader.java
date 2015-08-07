@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +42,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.apache.maven.plugins.surefire.report.ReportTestCase;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -143,6 +141,7 @@ public class Uploader {
 
     /**
      * Return {@code true} iff the host and port for the proxy are specified
+     * 
      * @return {@code true} when using the proxy, {@code false} otherwise
      */
     public boolean isProxyEnabled() {
@@ -170,29 +169,10 @@ public class Uploader {
 
         LOGGER.info("Uploading test results to CJAN.org");
 
-        boolean result = false;
-        final List<Test> tests = new ArrayList<Test>(testSuites.size());
-        for (ReportTestSuite suite : testSuites) {
-            if (suite.getNumberOfFailures() > 0) {
-                result = false;
-            }
-            for (ReportTestCase tc : suite.getTestCases()) {
-                // TBD: investigate where is the SKIP status
-                Status status = Status.SUCCESS;
-                Map<String, Object> failure = tc.getFailure();
-                if (failure != null) {
-                    status = Status.FAILURE;
-                }
-                // TBD: fix metadata
-                final String metadata = tc.getFullName();
-                final Test test = new Test(tc.getName(), status, metadata);
-                tests.add(test);
-            }
-        }
+        TestResults testResults = new TestResults(testSuites);
 
-        final TestRun testRun = new TestRun(groupId, artifactId, version, envProps, result == true ? Status.SUCCESS
-                : Status.FAILURE);
-        testRun.addTests(tests);
+        final TestRun testRun = new TestRun(groupId, artifactId, version, envProps, testResults.getGeneralStatus());
+        testRun.addTests(testResults.getTests());
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.log(Level.FINEST, "Test Run: " + testRun.toString());
