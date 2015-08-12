@@ -14,6 +14,20 @@ In Eclipse, create a new execution with.
 
 `-e -X clean test org.cjan:test-collector:upload -Dcjan.reports=./target0/surefire-reports -Dcjan.token=${YOUR_TOKEN}`
 
+## Set up
+
+The plug-in is deployed to Apache Maven central repository. Edit your settings.xml to
+configure the user that will authenticate with CJAN.org.
+
+```
+<servers>
+  <server>
+    <id>cjan</id>
+    <username>$TOKEN</username>
+  </server>
+</servers>
+```
+
 ## Usage
 
 First generate test reports.
@@ -22,7 +36,7 @@ First generate test reports.
 
 Now you can upload your results to CJAN.org with the following command line:
 
-`mvn org.cjan:test-collector:upload -Dtoken=${YOUR_TOKEN}`
+`mvn org.cjan:test-collector:upload`
 
 Other options that can be passed when using the plug-in include (with the default value):
 

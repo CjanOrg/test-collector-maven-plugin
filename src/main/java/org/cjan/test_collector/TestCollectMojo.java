@@ -31,12 +31,15 @@ import java.util.Locale;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.surefire.report.ReportTestSuite;
 import org.apache.maven.plugins.surefire.report.SurefireReportParser;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.MavenReportException;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
 
 /**
  * Collects test results to upload to CJAN.org.
@@ -56,15 +59,15 @@ public class TestCollectMojo extends AbstractMojo {
     @Parameter(property = "cjan.proxy.port", required = false)
     private String port;
 
-    @Parameter(property = "cjan.token", required = true)
-    private String token;
-
     @Parameter(defaultValue = "${project.build.directory}/surefire-reports", property = "cjan.reports", required = true)
     private File reports;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
 
+    // See also SettingsDecrypter
+    @Component
+    Settings settings;
     /*
      * (non-Javadoc)
      * 
@@ -76,6 +79,17 @@ public class TestCollectMojo extends AbstractMojo {
         if (!reports.exists() || !reports.isDirectory()) {
             throw new MojoExecutionException(String.format("Invalid reports directory [%s]", reports));
         }
+
+        final Server server = settings.getServer("cjan");
+        if (null == server) {
+            throw new MojoExecutionException("Missing CJAN server");
+        }
+
+        String token = server.getUsername();
+        if (null == token || "".equals(token.trim())) {
+            throw new MojoExecutionException("Missing CJAN token. Create a <server> and set your token in <username>");
+        }
+        
         // parse results
         Locale lc = Locale.getDefault();
         getLog().debug("Locale set: " + lc);
