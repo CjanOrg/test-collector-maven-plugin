@@ -48,19 +48,19 @@ import org.apache.maven.reporting.MavenReportException;
 public class TestCollectMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "http://cjan.org/upload/results", property = "cjan.url", required = false)
-    private String cjanUrl;
+    private String url;
 
     @Parameter(property = "cjan.proxy.host", required = false)
-    private String proxyHost;
+    private String host;
 
     @Parameter(property = "cjan.proxy.port", required = false)
-    private String proxyPort;
+    private String port;
 
     @Parameter(property = "cjan.token", required = true)
-    private String accessToken;
+    private String token;
 
     @Parameter(defaultValue = "${project.build.directory}/surefire-reports", property = "cjan.reports", required = true)
-    private File reportsDirectory;
+    private File reports;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
@@ -73,14 +73,14 @@ public class TestCollectMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Collecting tests for CJAN.org...");
 
-        if (!reportsDirectory.exists() || !reportsDirectory.isDirectory()) {
-            throw new MojoExecutionException(String.format("Invalid reports directory [%s]", reportsDirectory));
+        if (!reports.exists() || !reports.isDirectory()) {
+            throw new MojoExecutionException(String.format("Invalid reports directory [%s]", reports));
         }
         // parse results
         Locale lc = Locale.getDefault();
         getLog().debug("Locale set: " + lc);
 
-        SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reportsDirectory), lc);
+        SurefireReportParser parser = new SurefireReportParser(Arrays.asList(reports), lc);
         final TestResults testResults;
         getLog().debug("Parsing results...");
         // Result flag, true is all good, false is failures/bad.
@@ -107,9 +107,9 @@ public class TestCollectMojo extends AbstractMojo {
                 String.format("Project info: [groupId => %s] [artifactId => %s] [version => %s]", groupId, artifactId,
                         version));
 
-        getLog().debug(String.format("Creating uploader to %s", cjanUrl));
-        getLog().debug(String.format("Proxy settings: [%s]:[%s]", proxyHost, proxyPort));
-        Uploader uploader = new Uploader(cjanUrl, proxyHost, proxyPort, accessToken);
+        getLog().debug(String.format("Creating uploader to %s", url));
+        getLog().debug(String.format("Proxy settings: [%s]:[%s]", host, port));
+        Uploader uploader = new Uploader(url, host, port, token);
         try {
             String response = uploader.upload(groupId, artifactId, version, envProps, testResults);
             getLog().debug(String.format("Server response: %s", response));

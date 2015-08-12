@@ -2,11 +2,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.cjan</groupId>
-	<artifactId>test-collector-maven-plugin</artifactId>
 	<version>0.3-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
-	<name>test-collector-maven-plugin Maven Plugin</name>
+	<name>test-collector Maven Plugin</name>
 
 	<description>CJAN.org Maven plug-in used to upload test results.</description>
 
@@ -170,4 +169,5 @@
 		</profile>
 	</profiles>
 
+	<artifactId>test-collector</artifactId>
 </project>
