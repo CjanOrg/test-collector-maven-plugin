@@ -12,7 +12,9 @@ In Eclipse, create a new execution with.
 
 * Goal:
 
-`-e -X clean test org.cjan:test-collector:upload -Dcjan.reports=./target0/surefire-reports -Dcjan.token=${YOUR_TOKEN}`
+`-e -X clean test org.cjan:test-collector:0.4-SNAPSHOT:upload -Dcjan.reports=./target0/surefire-reports -Dcjan.url=http://localhost:8000/upload/results`
+
+Set up your token in settings.xml, as explained in CJAN.org.
 
 ## Set up
 

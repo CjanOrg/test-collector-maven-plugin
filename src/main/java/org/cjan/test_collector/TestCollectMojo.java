@@ -24,6 +24,7 @@
 package org.cjan.test_collector;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Collects test results to upload to CJAN.org.
@@ -124,14 +127,23 @@ public class TestCollectMojo extends AbstractMojo {
         getLog().debug(String.format("Creating uploader to %s", url));
         getLog().debug(String.format("Proxy settings: [%s]:[%s]", host, port));
         Uploader uploader = new Uploader(url, host, port, token);
-        try {
-            String response = uploader.upload(groupId, artifactId, version, envProps, testResults);
-            getLog().debug(String.format("Server response: %s", response));
-        } catch (UploadException ue) {
-            throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
-        }
 
-        getLog().info("Tests uploaded to CJAN.org! Thank you!");
+        final ObjectMapper mapper = new ObjectMapper();
+        String response = "";
+        try {
+            response = uploader.upload(groupId, artifactId, version, envProps, testResults);
+            ServerResponse serverResponse = mapper.readValue(response, ServerResponse.class);
+            getLog().debug(String.format("Server response: %s", response));
+            
+            getLog().info(serverResponse.getMessage());
+        } catch (UploadException ue) {
+            getLog().info(String.format("Failed upload tests to CJAN.org: %s", response), ue);
+            throw new MojoExecutionException("Failed uploading test results: " + ue.getMessage(), ue);
+        } catch (JsonParseException e) {
+            throw new MojoExecutionException(String.format("Failed to parse server response: %s", response), e);
+        } catch (IOException e) {
+            throw new MojoExecutionException(String.format("IO Error parsing server response: %s", response), e);
+        }
     }
 
 }
