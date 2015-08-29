@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.cjan</groupId>
-	<version>0.4</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>test-collector Maven Plugin</name>
@@ -40,7 +40,7 @@
 		<url>https://github.com/CjanOrg/test-collector-maven-plugin</url>
 		<connection>scm:git:git://github.com/CjanOrg/test-collector-maven-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:CjanOrg/test-collector-maven-plugin.git</developerConnection>
-	  <tag>test-collector-0.4</tag>
+	  <tag>test-collector-maven-plugin-0.1</tag>
   </scm>
 
 	<inceptionYear>2015</inceptionYear>
