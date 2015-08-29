@@ -1,0 +1,12 @@
+From: https://github.com/CjanOrg/test-collector-maven-plugin/issues/2
+
+The following test run is reported as success
+
+http://cjan.org/projects/4/versions/5/testruns/9
+
+Even though it contains failed tests
+
+---
+
+The project is the org.envirocar.server:rest-1.1.0-SNAPSHOT
+ 

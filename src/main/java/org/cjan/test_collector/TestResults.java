@@ -56,7 +56,7 @@ public class TestResults {
     public TestResults(List<ReportTestSuite> testSuites) {
         boolean result = true;
         for (ReportTestSuite suite : testSuites) {
-            if (suite.getNumberOfFailures() > 0) {
+            if (suite.getNumberOfFailures() > 0 || suite.getNumberOfErrors() > 0) {
                 result = false;
             }
             for (ReportTestCase tc : suite.getTestCases()) {
